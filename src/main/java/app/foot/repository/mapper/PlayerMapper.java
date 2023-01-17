@@ -4,9 +4,12 @@ import app.foot.model.Player;
 import app.foot.model.PlayerScorer;
 import app.foot.repository.entity.PlayerEntity;
 import app.foot.repository.entity.PlayerScoreEntity;
+import app.foot.service.PlayerService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class PlayerMapper {
 
     public Player toDomain(PlayerEntity entity) {
