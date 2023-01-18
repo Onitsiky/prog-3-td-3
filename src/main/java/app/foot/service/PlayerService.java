@@ -1,7 +1,6 @@
 package app.foot.service;
 
 import app.foot.model.Exception.PlayerException;
-import app.foot.model.Player;
 import app.foot.model.PlayerScorer;
 import app.foot.repository.PlayerScoreRepository;
 import app.foot.repository.entity.PlayerEntity;
