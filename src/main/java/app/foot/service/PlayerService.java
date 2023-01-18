@@ -1,8 +1,10 @@
 package app.foot.service;
 
+import app.foot.model.Exception.MatchException;
 import app.foot.model.Exception.PlayerException;
 import app.foot.model.PlayerScorer;
 import app.foot.repository.PlayerScoreRepository;
+import app.foot.repository.entity.MatchEntity;
 import app.foot.repository.entity.PlayerEntity;
 import app.foot.repository.entity.PlayerScoreEntity;
 import app.foot.repository.mapper.PlayerRepository;
@@ -24,23 +26,25 @@ public class PlayerService {
   }
 
 
-  public List<PlayerScoreEntity> addPlayerScore (List<PlayerScorer> goals, Integer matchId){
-    List<PlayerScoreEntity> result = new ArrayList<>();
+  public void addPlayerScore (List<PlayerScorer> goals, Integer matchId){
+    MatchEntity match = matchService.getMatchById(matchId);
     for (PlayerScorer goal : goals) {
-      PlayerScoreEntity temp = PlayerScoreEntity.builder()
-          .player(getPlayerById(goal.getPlayer().getId()))
+      PlayerEntity scorer =getPlayerById(goal.getPlayer().getId());
+          PlayerScoreEntity temp = PlayerScoreEntity.builder()
+          .player(scorer)
           .ownGoal(goal.getIsOwnGoal())
           .minute(goal.getMinute())
-          .match(matchService.getMatchById(matchId))
+          .match(match)
           .build();
-     if(!goal.getPlayer().getIsGuardian() && !result.contains(temp)){
+      
+     if(!goal.getPlayer().getIsGuardian() && (match.getTeamA().equals(scorer.getTeam()) || match.getTeamB().equals(scorer.getTeam()))){
        playerScorerepository.save(temp);
-       result.add(temp);
      }
-     else {
-       throw new PlayerException("Goal not granted, player " + goal.getPlayer().getName() + " is a guardian");
+     else if (goal.getPlayer().getIsGuardian()){
+       throw new PlayerException("Goal not granted because player " + goal.getPlayer().getName() + " is a guardian");
+     } else if (!match.getTeamA().equals(scorer.getTeam()) || !match.getTeamB().equals(scorer.getTeam())) {
+       throw new MatchException("Goal not granted because player " + goal.getPlayer().getName() + " is not in teams list");
      }
     }
-    return result;
   }
 }

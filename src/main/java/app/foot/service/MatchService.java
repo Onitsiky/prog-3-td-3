@@ -19,8 +19,6 @@ public class MatchService {
     private final MatchRepository repository;
     private final MatchMapper mapper;
 
-    private final PlayerMapper playerMapper;
-
     public List<Match> getMatches() {
         return repository.findAll().stream()
                 .map(mapper::toDomain)
