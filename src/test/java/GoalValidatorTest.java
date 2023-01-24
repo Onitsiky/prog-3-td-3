@@ -3,7 +3,6 @@ import app.foot.exception.BadRequestException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static utils.TestUtils.*;
 
 public class GoalValidatorTest {
@@ -23,7 +22,8 @@ public class GoalValidatorTest {
 
     @Test
     void when_guardian_throws_exception() {
-        assertThrows(RuntimeException.class, () -> subject.accept(
+        assertThrowsExceptionMessage("400 BAD_REQUEST : Player#" + player1().getId() + " is a guardian" + " so they cannot score."
+            ,RuntimeException.class, () -> subject.accept(
                 scorer1().toBuilder()
                         .player(player1().toBuilder()
                                 .isGuardian(true)
@@ -33,7 +33,8 @@ public class GoalValidatorTest {
 
     @Test
     void when_score_time_greater_than_90_throws_exception() {
-        assertThrows(RuntimeException.class, () -> subject.accept(
+        assertThrowsExceptionMessage("400 BAD_REQUEST : Player#" + scorer1().getPlayer().getName() + " cannot score after minute 90.",
+            RuntimeException.class, () -> subject.accept(
                 scorer1().toBuilder()
                         .scoreTime(91)
                         .build()));
@@ -41,7 +42,8 @@ public class GoalValidatorTest {
 
     @Test
     void when_score_time_less_than_0_throws_exception() {
-        assertThrows(RuntimeException.class, () -> subject.accept(
+        assertThrowsExceptionMessage("400 BAD_REQUEST : Player#" + scorer1().getPlayer().getId() + " cannot score before before minute 0.",
+            RuntimeException.class, () -> subject.accept(
                 scorer1().toBuilder()
                         .scoreTime(-1)
                         .build()));

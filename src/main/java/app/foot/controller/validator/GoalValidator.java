@@ -28,7 +28,7 @@ public class GoalValidator implements Consumer<PlayerScorer> {
             if (playerScorer.getScoreTime() > 90) {
                 exceptionBuilder.append("Player#")
                         .append(playerScorer.getPlayer().getName())
-                        .append(" cannot score before after minute 90.");
+                        .append(" cannot score after minute 90.");
             }
         }
         if (!exceptionBuilder.isEmpty()) {
